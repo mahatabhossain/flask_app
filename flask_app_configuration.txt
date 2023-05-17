@@ -1,0 +1,16 @@
+>_ Install virtual env package globally
+>_ Create a directory to Flask app
+>_ Active virtual env (ex: source env_name/bin/activate)
+>_ Create app.py and write any script(as a server)
+>_ Export app (ex: export FLASK_APP=app)
+>_ Set environment (FLASK_ENV=development)
+>_ Set debug true to get autoreload on changes in file (ex: export FLASK_DEBUG=1)
+>_ Run the flask server (ex: flask run)
+
+>>_ Register a blueprint
+https://realpython.com/flask-blueprint/#:~:text=To%20use%20any%20Flask%20Blueprint,is%20extended%20with%20its%20contents.&text=%24%20flask%20run-,While%20the%20application%20is%20running%2C%20go%20to%20http%3A%2F%2Flocalhost,5000%20using%20your%20web%20browser.
+
+>> Generate requirement.text    
+    pip freeze > requirement.txt 
+    > In case requirement.txt lists including global module and package run the following command:
+    python -m pip freeze --local > requirements.txt
