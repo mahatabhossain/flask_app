@@ -14,3 +14,6 @@ https://realpython.com/flask-blueprint/#:~:text=To%20use%20any%20Flask%20Bluepri
     pip freeze > requirement.txt 
     > In case requirement.txt lists including global module and package run the following command:
     python -m pip freeze --local > requirements.txt
+
+>> Run app with auto reload
+    flask --debug run

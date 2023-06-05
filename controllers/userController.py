@@ -1,55 +1,72 @@
 from flask import jsonify, request
 from models.userModel import Users
+import bcrypt
+from flask_jwt_extended import(
+    create_access_token,
+    create_refresh_token
+)
+from database.db_connection import db
 
 
-################# USER SIGNUP SERVICE ###############
-def userSignUp():
+# ********************** SIGN UP USER SERVICE ******************
+def registerUser():
     try:
-        #GET FORM DATA FROM REQUEST OBJECT
-        # fullName = request.form.get('fullName')
+        # Parse the incomming JSON request data and returns it.
+        request_data = request.get_json()
 
-        #GET JSON DATA FROM REQUEST OBJECT
-        req_data = request.get_json()
+        fullName = request_data['fullName']
+        email = request_data['email']
+        password = request_data['password'].encode("utf8")
 
-        fullName = req_data['fullName']
-        email = req_data['email']
-        password = req_data['password']
+        # Encrypting password
+        passwordHash = bcrypt.hashpw(password, bcrypt.gensalt())
+    
+        # Saving data into database
+        userData = Users(fullName=fullName, email=email, password=passwordHash).save()
 
-        #GET QUERY PARAMETER 
-        userId = request.args.get('id')   
-
-        #SAVING DATA INTO DATABASE
-        userData = Users(fullName = fullName, email = email, password = password ).save()
-
-        # return jsonify({'message':'User signup successful', 'data':userData})
-        # return jsonify({'status': 'User registration successfull'},userData)
-        return jsonify(userData)
+        return jsonify({"status": "Sign up success", "data": userData})
 
     except Exception as e:
-        return jsonify({"status": 'User registration failed', 'error': str(e)})
+        print(str(e))
+        return jsonify({"error": "Sign up failed"})
+    
 
-
-################# GET USER SERVICE ###############
-def getUser():
+# ******************** LOGIN USER SERVICE **************************
+def loginUser():
     try:
-        # userDetails = Users.objects.get_or_404()
-        # print(userDetails)
-        for user in Users.objects:
-            # print(user)
-            return jsonify(user)
-        # return '<h1>Hi</h1>'
+        # Get query parameters
+        # userId = request.args.get('id')
 
+        # Get data from request object
+        # fullName = request.form.get('fullName')  
+
+        # Parese the incomming JSON request data and returns it.
+        bodyData = request.get_json()
+
+        # Getting data from body
+        email = bodyData['email']
+        password = bodyData['password']
+
+        if(not email and password): return jsonify({"error": "Please enter your details"})
+
+        # Query data from database by email
+        if(email):
+            userDetails = Users.objects(email=email)
+            print(jsonify({userDetails}))
+
+        # Validating password
+        is_valid_password = bcrypt.checkpw(str(password).encode("utf8"), str(userDetails[0].password).encode("utf8"))
+
+        if(not is_valid_password): return jsonify({"authError": "Credentials does'nt match"})
+        
+        if(is_valid_password and str(userDetails[0].email) == email):
+            # Generating token
+            token = create_access_token(identity=str(userDetails[0].id))
+            refreshToken = create_refresh_token(str(userDetails[0].id))
+            print("Refresh token", refreshToken, "Token", token)
+
+            return jsonify({"status": "Login success"}, userDetails, {"token": token})
+    
     except Exception as e:
-        return jsonify({"status": "Failed to retrieve user", 'error': str(e)})
-
-
-    
-############## UPDATE USER #####################
-
-
-
-
-############## DELETE USER ######################
-
-
-    
+        print(str(e))
+        return jsonify({"error": "Unable to login"})

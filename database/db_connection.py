@@ -22,4 +22,4 @@ def initialize_db(app):
         db.init_app(app)
         print('Database connected')
     except Exception as e :
-        print(e)
+        print(str(e))
