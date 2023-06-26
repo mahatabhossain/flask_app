@@ -1,4 +1,5 @@
-from flask import jsonify, request
+import os
+from flask import jsonify, request, render_template
 from models.userModel import Users
 import bcrypt
 from flask_jwt_extended import(
@@ -6,6 +7,9 @@ from flask_jwt_extended import(
     create_refresh_token
 )
 from database.db_connection import db
+from fileinput import filename
+# from app import mongo_client_db
+
 
 
 # ********************** SIGN UP USER SERVICE ******************
@@ -22,6 +26,7 @@ def registerUser():
         passwordHash = bcrypt.hashpw(password, bcrypt.gensalt())
     
         # Saving data into database
+        # userData = mongo_db_client['users'].insert_one(fullName=fullName, email=email, password=passwordHash).save()
         userData = Users(fullName=fullName, email=email, password=passwordHash).save()
 
         return jsonify({"status": "Sign up success", "data": userData})
@@ -32,6 +37,9 @@ def registerUser():
     
 
 # ******************** LOGIN USER SERVICE **************************
+def renderLoginForm():
+    return render_template('loginForm.html')
+
 def loginUser():
     try:
         # Get query parameters
@@ -41,18 +49,24 @@ def loginUser():
         # fullName = request.form.get('fullName')  
 
         # Parese the incomming JSON request data and returns it.
-        bodyData = request.get_json()
+        # bodyData = request.get_json()
+        user_name = request.form.get('user_name')
+        password = request.form.get('password')
 
+        print(user_name, password)
         # Getting data from body
-        email = bodyData['email']
-        password = bodyData['password']
+        # email = bodyData['email']
+        # password = bodyData['password']
 
-        if(not email and password): return jsonify({"error": "Please enter your details"})
+        email = user_name
+        password = password
+    
+        # if(not(email and password)): return jsonify({"error": "Please enter your details"})
 
         # Query data from database by email
         if(email):
-            userDetails = Users.objects(email=email)
-            print(jsonify({userDetails}))
+            userDetails = Users.objects.get_or_404(email=email)
+            # print(jsonify({userDetails}))
 
         # Validating password
         is_valid_password = bcrypt.checkpw(str(password).encode("utf8"), str(userDetails[0].password).encode("utf8"))
@@ -70,3 +84,59 @@ def loginUser():
     except Exception as e:
         print(str(e))
         return jsonify({"error": "Unable to login"})
+    
+
+# ********************* UPDATE USER SERVICE *************************
+
+def updateUser():
+    try:
+
+        body_data = request.get_json()
+        id = request.args.get('id')
+
+        print("Update service called", id)
+        updateDetails = Users.objects.get_or_404(id = id)
+
+        # fullName = body_data['fullName']
+        # email = body_data['email']
+        
+        if(updateDetails): 
+            if body_data['fullName']: updateDetails.fullName = body_data['fullName']
+            if body_data['email']: updateDetails.email = body_data['email']
+
+        # if(body_data['email']): updateDetails.email = body_data['email']
+
+        updateDetails.save()
+
+        return jsonify({"status": "success", "updated_details": updateDetails})
+    except Exception as e:
+        print(str(e))
+        return {jsonify({"error": e})}
+
+# ********************* DELETE USER SERVICE *********************************
+
+def delete_user(id):
+    try:
+        # user_id = request.args.get('id')
+
+        print("Delete user service called", id)
+        user_details = Users.objects.get_or_404(id = id)
+        user_details.delete()
+
+        return(jsonify({"status": "success"}))
+    
+    except Exception as e:
+        print(str(e))
+
+#************************// FILE UPLOAD //*****************************
+
+def upload_file():
+    try:
+        if request.method == 'POST':
+            if not os.path.exists("./static/images"):
+                os.makedirs("./static/images")
+            file = request.files['file']
+            file.save("./static/images/"+file.filename)
+            return 'File upload successful'
+    except Exception as e:
+        return jsonify({"error": str(e)})

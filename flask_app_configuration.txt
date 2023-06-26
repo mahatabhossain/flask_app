@@ -17,3 +17,6 @@ https://realpython.com/flask-blueprint/#:~:text=To%20use%20any%20Flask%20Bluepri
 
 >> Run app with auto reload
     flask --debug run
+
+>> Make virtural environment
+    python3 -m venv "venv name"
