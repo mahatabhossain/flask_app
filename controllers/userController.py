@@ -1,14 +1,16 @@
 import os
-from flask import jsonify, request, render_template
+from flask import jsonify, redirect, request, render_template, make_response
 from models.userModel import Users
 import bcrypt
 from flask_jwt_extended import(
     create_access_token,
-    create_refresh_token
+    create_refresh_token,
+    set_access_cookies,
 )
 from database.db_connection import db
 from fileinput import filename
 # from app import mongo_client_db
+import json
 
 
 
@@ -41,6 +43,10 @@ def renderLoginForm():
     return render_template('loginForm.html')
 
 def loginUser():
+    # resp = jsonify({'login': True})
+    # resp = make_response()
+    # resp.set_cookie('token', 'token')
+    # return resp
     try:
         # Get query parameters
         # userId = request.args.get('id')
@@ -60,26 +66,31 @@ def loginUser():
 
         email = user_name
         password = password
-    
+
         # if(not(email and password)): return jsonify({"error": "Please enter your details"})
 
         # Query data from database by email
         if(email):
             userDetails = Users.objects.get_or_404(email=email)
-            # print(jsonify({userDetails}))
+            print("Fetched user details", userDetails.password)
 
         # Validating password
-        is_valid_password = bcrypt.checkpw(str(password).encode("utf8"), str(userDetails[0].password).encode("utf8"))
+        is_valid_password = bcrypt.checkpw(str(password).encode("utf8"), str(userDetails.password).encode("utf8"))
+        print("Password validated", is_valid_password)
 
         if(not is_valid_password): return jsonify({"authError": "Credentials does'nt match"})
         
-        if(is_valid_password and str(userDetails[0].email) == email):
+        if(is_valid_password and str(userDetails.email) == email):
             # Generating token
-            token = create_access_token(identity=str(userDetails[0].id))
-            refreshToken = create_refresh_token(str(userDetails[0].id))
-            print("Refresh token", refreshToken, "Token", token)
+            token = create_access_token(identity=str(userDetails.id))
+            # refreshToken = create_refresh_token(identity=str(userDetails.id))
+            resp = make_response(jsonify({"status": "Login success", "user": userDetails, "token": token}))
+            resp.set_cookie('token', token)
+            print("Cookie set successful", resp)
+            print("Token", token)
 
-            return jsonify({"status": "Login success"}, userDetails, {"token": token})
+            # return jsonify({"status": "Login success"}, userDetails, {"token": token})
+            return resp
     
     except Exception as e:
         print(str(e))
