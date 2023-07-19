@@ -9,22 +9,22 @@ userRoutes = Blueprint('userRouter', __name__)
 def signUp():
     return registerUser()
 
-# @userRoutes.get('/login')
-# def loginForm():
-#     return renderLoginForm()
+@userRoutes.get('/login-page')
+def loginForm():
+    return renderLoginForm()
 
-# @userRoutes.post('/login')
-# def login():
-#     return loginUser()
+@userRoutes.post('/login')
+def login():
+    return loginUser()
 
-# @userRoutes.put('/update')
-# def update():
-#     return updateUser()
+@userRoutes.put('/update')
+def update():
+    return updateUser()
 
-# @userRoutes.delete('/delete/<id>')
-# def delete(id):
-#     return delete_user(id)
+@userRoutes.delete('/delete/<id>')
+def delete(id):
+    return delete_user(id)
 
-# @userRoutes.post('/file')
-# def file_upload():
-#     return upload_file()
+@userRoutes.post('/file')
+def file_upload():
+    return upload_file()

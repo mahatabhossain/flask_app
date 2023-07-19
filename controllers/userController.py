@@ -9,8 +9,8 @@ from flask_jwt_extended import(
 )
 from database.db_connection import db
 from fileinput import filename
-
-
+# from app import mongo_client_db
+import json
 
 
 
@@ -28,11 +28,9 @@ def registerUser():
         passwordHash = bcrypt.hashpw(password, bcrypt.gensalt())
     
         # Saving data into database
-        print("Registration successfull")
+        # userData = mongo_db_client['users'].insert_one(fullName=fullName, email=email, password=passwordHash).save()
         userData = Users(fullName=fullName, email=email, password=passwordHash).save()
-        # db.session.add(userData)
-        # db.session.commit()
-     
+
         return jsonify({"status": "Sign up success", "data": userData})
 
     except Exception as e:
