@@ -1,0 +1,24 @@
+                                                        PostgreSQL CONFIGURATION
+                                        ---------------------------------------------------------
+
+1. Add pgAdmin 4 repository
+2. Add Public GPG Key
+    Follow link: https://linux.how2shout.com/how-to-install-pgadmin-4-on-ubuntu-20-04-lts-linux/
+
+3. Install PostgreSQL Server on Ubuntu
+    Follow link: https://linux.how2shout.com/install-postgresql-server-client-on-ubuntu-22-04-lts-jammy/
+
+4. Install pgAdmin4 desktop or server and configure pgAdmin account:
+    link: https://linux.how2shout.com/how-to-install-pgadmin-4-on-ubuntu-20-04-lts-linux/
+
+5. The pgadmin4 package contains both pgadmin4-web and pgadmin4-desktop versions.
+
+6. Login into pgAdmin using Credentials
+7. Create a server and setup configuration. in-case of logn isssue open terminal follow the commands
+    Login into postgres server: sudo -u postgres psql postgres
+    Alter username and password: alter user postgres with password 'postgres'
+
+
+
+
+
