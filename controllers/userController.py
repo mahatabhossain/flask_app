@@ -11,9 +11,6 @@ from database.db_connection import db
 from fileinput import filename
 
 
-
-
-
 # ********************** SIGN UP USER SERVICE ******************
 def registerUser():
     try:
@@ -24,12 +21,16 @@ def registerUser():
         email = request_data['email']
         password = request_data['password'].encode("utf8")
 
+        print(fullName, email, type(password))
+
         # Encrypting password
         passwordHash = bcrypt.hashpw(password, bcrypt.gensalt())
     
         # Saving data into database
         print("Registration successfull")
         userData = Users(fullName=fullName, email=email, password=passwordHash).save()
+        print("After Registration")
+
         # db.session.add(userData)
         # db.session.commit()
      

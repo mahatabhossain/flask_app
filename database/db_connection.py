@@ -19,16 +19,16 @@ def initialize_db(app):
         # 'host': 'localhost',
         # 'port': 27017
         # }
-        print("DB CONNECTED")
+      
 
         app.config['MONGODB_SETTINGS'] = {
         'host': MONGO_URI
         }
-        
+        print("DB CONNECTED")
         # db.init_app(app)
         # print('Database connected')
     except Exception as e :
-        print("DB CONNECTION ERROR")
+        print("DB CONNECTION ERROR", str(e))
 
 #**************************// Connection using MongoClient //****************************
 # def initialize_db(app):
