@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 import os
 from flask_cors import CORS
 from flask_socketio import SocketIO
-
+from routers.redis_router import redis_router
 
 
 app = Flask(__name__)
@@ -26,6 +26,8 @@ print("CONFIG", app.config)
 
 #BLUEPRINTS
 app.register_blueprint(userRoutes, url_prefix="/user")
+app.register_blueprint(redis_router, url_prefix='/redis')
+
 
 @app.route('/')
 def server_status():
