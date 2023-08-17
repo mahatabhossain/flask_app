@@ -22,8 +22,6 @@ soketio = SocketIO(app)
 
 initialize_db(app)
 
-print("CONFIG", app.config)
-
 #BLUEPRINTS
 app.register_blueprint(userRoutes, url_prefix="/user")
 app.register_blueprint(redis_router, url_prefix='/redis')

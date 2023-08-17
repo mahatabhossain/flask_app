@@ -2,7 +2,6 @@ from flask_mongoengine import MongoEngine
 # from flask_pymongo import PyMongo
 # from flask_sqlalchemy import SQLAlchemy
 from dotenv import dotenv_values
-import os
 
 
 MONGO_URI = dotenv_values('.env')['MONGO_URI']
@@ -15,12 +14,12 @@ db = MongoEngine()
 def initialize_db(app):
     try:
         # app.config['MONGODB_SETTINGS'] = {
-        # 'db': 'flask_app_db',
+        # 'db': 'flaskAppDB',
         # 'host': 'localhost',
-        # 'port': 27017
+        # 'port': 27017,
+        # 'alias':'default'
         # }
       
-
         app.config['MONGODB_SETTINGS'] = {
         'host': MONGO_URI
         }

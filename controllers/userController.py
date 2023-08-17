@@ -15,11 +15,11 @@ from fileinput import filename
 def registerUser():
     try:
         # Parse the incomming JSON request data and returns it.
-        request_data = request.get_json()
+        body = request.get_json()
 
-        fullName = request_data['fullName']
-        email = request_data['email']
-        password = request_data['password'].encode("utf8")
+        fullName = body['fullName']
+        email = body['email']
+        password = str(body['password']).encode("utf8")
 
         print(fullName, email, type(password))
 
