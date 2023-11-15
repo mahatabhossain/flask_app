@@ -1,10 +1,11 @@
 from flask import Flask, jsonify
 from database.db_connection import initialize_db
-from routers.userRouter import userRoutes
 from flask_jwt_extended import JWTManager
 import os
 from flask_cors import CORS
 from flask_socketio import SocketIO
+from routers.userRouter import userRoutes
+from routers.miscellaneus import exp_router
 from routers.redis_router import redis_router
 
 
@@ -25,6 +26,7 @@ initialize_db(app)
 #BLUEPRINTS
 app.register_blueprint(userRoutes, url_prefix="/user")
 app.register_blueprint(redis_router, url_prefix='/redis')
+app.register_blueprint(exp_router, url_prefix='/miscellaneous')
 
 
 @app.route('/')
